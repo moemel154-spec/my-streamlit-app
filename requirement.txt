@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+scikit-learn
+plotly
+apache-beam[gcp]
+google-cloud-texttospeech
+google-cloud-firestore
+google-cloud-storage
+google-generativeai
