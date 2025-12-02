@@ -416,25 +416,6 @@ Summarize the novel '{novel_title}' in exactly 6 concise sentences.
             "text/csv",
             use_container_width=True,
         )
-
-        # XLSX button
-            buffer = io.BytesIO()
-            with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
-                df_vocab.to_excel(writer, index=False, sheet_name="Vocabulary")
-                df_reviews.to_excel(writer, index=False, sheet_name="Reviews")
-                pd.DataFrame([{
-                "summary": summary,
-                "enriched_summary": enriched_summary
-            }]).to_excel(writer, index=False, sheet_name="Summary")
-
-            st.download_button(
-            "📘 Download XLSX (Vocab)",
-            buffer.getvalue(),
-            "novel_analysis.xlsx",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True,
-        )
-
         else:
             st.info("No data to download yet. Please analyze a novel first.")
 
@@ -445,6 +426,7 @@ Summarize the novel '{novel_title}' in exactly 6 concise sentences.
 
 
     
+
 
 
 
