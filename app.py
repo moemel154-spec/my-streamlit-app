@@ -4,7 +4,7 @@ import json
 import re
 import google.generativeai as genai
 
-st.set_page_config(page_title="Lite Vocabulary Extractor", layout="wide")
+st.set_page_config(page_title="Vocabulary Extractor", layout="wide")
 
 # ---------------- API KEY ----------------
 st.sidebar.header("API Key")
@@ -37,8 +37,6 @@ if st.button("Analyze") and novel.strip():
     if not api_key:
         st.error("Enter API key first.")
         st.stop()
-
-    st.info("Running only 2 API calls…")
 
     # ============ CALL 1 ============
 
@@ -129,3 +127,4 @@ if st.button("Analyze") and novel.strip():
         )
     else:
         st.info("No vocabulary available.")
+
