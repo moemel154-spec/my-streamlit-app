@@ -18,16 +18,16 @@ MODEL = "models/gemini-2.5-flash"
 def ask(prompt: str) -> str:
     try:
         model = genai.GenerativeModel(MODEL)
-        r = model.generate_content(prompt)
-        return r.text or ""
+        response = model.generate_content(prompt)
+        return response.text or ""
     except Exception as e:
         return f"❌ Error: {e}"
 
 # ---------------- JSON CLEAN ----------------
 def extract_json(text: str):
     text = text.replace("```json", "").replace("```", "")
-    m = re.search(r"\[.*\]", text, re.DOTALL)
-    return m.group(0) if m else "[]"
+    match = re.search(r"\[.*\]", text, re.DOTALL)
+    return match.group(0) if match else "[]"
 
 # ---------------- UI ----------------
 st.title("📘 Ultra-Lite Vocabulary Extractor")
@@ -38,7 +38,13 @@ if st.button("Analyze") and novel.strip():
         st.error("Enter API key first.")
         st.stop()
 
-    st.info("Running only 2 API calls. Please wait...")
+    st.info("Running only 2 API calls…")
 
     # ============ CALL 1 ============
-    prompt1 = f"""
+    prompt1 = (
+        "For the novel \"" + novel + "\" return EXACTLY the following JSON object:\n\n"
+        "{\n"
+        "  \"summary\": \"6-sentence spoiler-free summary.\",\n"
+        "  \"difficulty\": [\n"
+        "     {\"Aspect\": \"Vocabulary\", \"Summary\": \"one sentence\"},\n"
+        "     {\"Aspect\"
