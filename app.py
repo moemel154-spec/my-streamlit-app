@@ -72,7 +72,7 @@ genai.configure(api_key=gemini_key)
 def safe_call(prompt: str, web: bool = False) -> str:
     time.sleep(1.2)  # prevent 429
     try:
-        model = genai.GenerativeModel("gemini-2.0-flash-lite")
+        model = genai.GenerativeModel("gemini-2.5-flash")
         if web:
             response = model.generate_content(
                 prompt,
@@ -216,3 +216,4 @@ if analyze_btn and novel_title.strip() != "":
             st.download_button("📄 Download Vocabulary CSV", csv, "vocab.csv", "text/csv")
         else:
             st.info("No data to download yet.")
+
