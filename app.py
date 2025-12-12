@@ -30,7 +30,7 @@ def extract_json(text: str):
     return match.group(0) if match else "[]"
 
 # ---------------- UI ----------------
-st.title("📘 Ultra-Lite Vocabulary Extractor")
+st.title("📘Vocabulary Extractor")
 novel = st.text_input("Novel Title", "")
 
 if st.button("Analyze") and novel.strip():
@@ -127,4 +127,5 @@ if st.button("Analyze") and novel.strip():
         )
     else:
         st.info("No vocabulary available.")
+
 
