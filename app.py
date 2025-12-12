@@ -150,7 +150,7 @@ def extract_json_array(text: str) -> str:
 def ask_gemini(prompt: str, web: bool = False) -> str:
     """Call Gemini model; if web=True, enable web_search tool."""
     try:
-        model = genai.GenerativeModel("gemini-2.0-flash")
+        model = genai.GenerativeModel("gemini-2.5-flash")
         if web:
             response = model.generate_content(
                 prompt,
@@ -426,6 +426,7 @@ Summarize the novel '{novel_title}' in exactly 6 concise sentences.
 
 
     
+
 
 
 
