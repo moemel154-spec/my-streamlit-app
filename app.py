@@ -151,7 +151,7 @@ def extract_json_array(text: str) -> str:
 def ask_gemini(prompt: str, web: bool = False) -> str:
     """Call Gemini model; if web=True, enable web_search tool."""
     try:
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        model = genai.GenerativeModel("gemini-1.5-flash-8b")
 
         if web:
             response = model.generate_content(
@@ -445,3 +445,4 @@ if analyze_btn and novel_title.strip() != "":
                 st.info("No data to download yet. Please analyze a novel first.")
 
 st.markdown("</div></div>", unsafe_allow_html=True)
+
