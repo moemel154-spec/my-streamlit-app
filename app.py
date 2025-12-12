@@ -232,41 +232,62 @@ def generate_sentences(novel_title: str) -> str:
 
 def extract_vocab(sentences: str, n: int = 20):
     prompt = f"""
-Extract {n} English vocabulary items from the sentences below.
+    Extract {n} English vocabulary items from the sentences below.
+    RULES:
+    - The word must come DIRECTLY from the sentences.
+    - Use the exact word form (no lemmatization).
+    - Output fields per item:
+      - word
+      - meaning_en
+      - part_of_speech
+      - CEF_level (A1, A2, B1, B2, C1, C2)
+      - example_sentence
+    STRICT:
+    - JSON array ONLY
+    - NO explanations.
 
-RULES:
-- The word must come DIRECTLY from the sentences.
-- Use the exact word form (no lemmatization).
-- Output fields per item:
-    - word
-    - meaning_en
-    - part_of_speech 
-    - CEF_level (A1, A2, B1, B2, C1, C2) 
-    - example_sentence 
+    Sentences: {sentences}
+    """
 
-STRICT:
-- JSON array ONLY
-- NO explanations. NO breakdowns. NO comments.
-
-Sentences:
-{sentences}
-"""
     raw = ask_gemini(prompt, web=False)
     cleaned = extract_json_array(raw)
+
+    # ----- Try #1: parse cleaned JSON -----
     try:
         arr = json.loads(cleaned)
     except:
+        arr = None
+
+    # ----- Try #2: repair JSON with model -----
+    if not isinstance(arr, list):
         repaired = repair_json_with_model(raw)
         try:
             arr = json.loads(repaired)
         except:
-            return None, raw
+            return None, raw   # <--- hard fail stop
+
+    # If still not array → stop
+    if not isinstance(arr, list):
+        return None, raw
+
+    # Filter: keep only dicts
+    arr = [x for x in arr if isinstance(x, dict)]
+
+    # If empty → stop safely
+    if len(arr) == 0:
+        return None, raw
+
+    # Clean each word entry
     for o in arr:
-        w = o.get("word", "")
-        w = re.sub(r"\[.*?\]", "", w).strip()
-        o["word"] = w
+        if "word" in o and isinstance(o["word"], str):
+            w = o["word"]
+            w = re.sub(r"\[.*?\]", "", w).strip()
+            o["word"] = w
+
+    # Sort by CEFR
     cef_order = {"C2": 6, "C1": 5, "B2": 4, "B1": 3, "A2": 2, "A1": 1}
     arr = sorted(arr, key=lambda x: cef_order.get(x.get("CEF_level", "B1"), 3), reverse=True)
+
     return arr, raw
 
 # ----------------- RUN ANALYSIS -----------------
@@ -421,3 +442,4 @@ Summarize the novel '{novel_title}' in exactly 6 concise sentences.
             st.info("No data to download yet. Please analyze a novel first.")
 
     st.markdown("</div></div>", unsafe_allow_html=True)
+
